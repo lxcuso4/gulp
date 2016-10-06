@@ -49,19 +49,11 @@ gulp.task('images', function() {
         .pipe(gulp.dest('dist/assets/img'))
         .pipe(notify({ message: 'Images task complete' }));
 });
-var del = require('del');//在执行任务前先清除之前的任务
-gulp.task('clean', function(cb) {
-    del(['dist/assets/css', 'dist/assets/js', 'dist/assets/img'], cb);
-});
-
-gulp.task('default', function() {
-    gulp.start(['styles', 'scripts', 'images']);
-});
 
 // Watch
 gulp.task('watch', function() {
     // Watch .scss files
-    gulp.watch('src/styles/*.scss', ['styles']);
+    gulp.watch('src/styles/*.less', ['styles']);
     // Watch .js files
     gulp.watch('src/scripts/*.js', ['scripts']);
     // Watch image files
@@ -71,6 +63,17 @@ gulp.task('watch', function() {
     // Watch any files in dist/, reload on change
     gulp.watch(['dist/**']).on('change', livereload.changed);
 });
+
+var del = require('del');//在执行任务前先清除之前的任务
+gulp.task('clean', function() {
+    del(['dist/assets/css','dist/assets/js','dist/assets/img']);
+});
+
+gulp.task('default', ['clean'], function () {
+    gulp.start(['scripts','images','styles','watch'])
+});
+
+
 //gulp.task(name[, deps], fn) 定义任务  name：任务名称 deps：依赖任务名称 fn：回调函数
 //gulp.src(globs[, options]) 执行任务处理的文件  globs：处理的文件路径(字符串或者字符串数组)
 //gulp.dest(path[, options]) 处理完后文件生成路径
