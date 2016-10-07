@@ -22,13 +22,14 @@ gulp.task('styles', function () {
 var concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     notify = require('gulp-notify'),
-    jshintConfig  = require('./package').jshintConfig;
+    jshint = require('gulp-jshint'),
+    jshintConfig  = require('./package.json').jshintConfig;
 
 gulp.task('scripts', function() {
     return gulp.src('src/scripts/**/*.js')
         .pipe(concat('main.js'))//合并js文件
-        // .pipe(jshint(jshintConfig))//语法检查，package.json中配置
-        // .pipe(jshint.reporter('default'))//语法错误提示
+        .pipe(jshint(jshintConfig))//语法检查，package.json中配置
+        .pipe(jshint.reporter('default'))//语法错误提示
         .pipe(gulp.dest('dist/assets/js'))
         .pipe(uglify({
             mangle: {toplevel: true, except: ['liu','log'], keep_fnames: false },
@@ -51,6 +52,7 @@ gulp.task('images', function() {
 });
 
 // Watch
+var livereload = require('gulp-livereload');
 gulp.task('watch', function() {
     // Watch .scss files
     gulp.watch('src/styles/*.less', ['styles']);
